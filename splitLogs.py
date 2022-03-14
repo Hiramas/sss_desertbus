@@ -1,7 +1,9 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 
 import argparse
+from datetime import datetime, timedelta
 import gzip
+import os
 
 parser = argparse.ArgumentParser(description='Script to split .weechatlog files by day')
 parser.add_argument('-f', '--file',
@@ -28,7 +30,12 @@ def writeLog(date, lines):
     lines = sorted(lines, key=lambda l: l[:19])  # stable sort lines by timestamp
 
     if args.compress:
-        with gzip.open("{}.gz".format(fname), mode='wb') as output:
+        ago = datetime.utcnow() - timedelta(days=30)
+        if os.path.exists(f"{fname}.gz") and date < ago.strftime("%Y-%m-%d"):
+            return
+
+        with gzip.open(f"{fname}.gz", mode='wt') as output:
+            print(f"# writing {date} ...")
             output.writelines(lines)
     else:
         with open(fname, 'w') as output:
