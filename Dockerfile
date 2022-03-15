@@ -9,8 +9,9 @@ RUN mkdir /tmp/logs
 RUN mkdir /var/www/html/sss
 
 RUN git clone --depth 1 --branch desertbus https://github.com/DesertBot/superseriousstats.git /tmp/sss
+RUN git clone --depth 1 --branch master https://github.com/DesertBot/sss_desertbus.git /tmp/sss-config
 
-COPY new-desertbus.conf /tmp/sss/sss.conf
+RUN cp /tmp/sss-config/desertbus.conf /tmp/sss/sss.conf
 
 CMD php /tmp/sss/sss.php -i /tmp/logs && \
     php /tmp/sss/sss.php -m /tmp/nick_aliases.txt && \
